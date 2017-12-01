@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0"/>
+	<title>Document</title>
+	<style>
+		body{
+	    background: #f5f5f5;
+		}
+		.clearfix:after{
+			clear: both;
+			content: '.';
+			display: block;
+			height: 0;
+			width: 0;
+			visibility:hidden;
+		}
+		.fr{
+			float: right;
+		}
+		.show{
+			display: block;
+		}
+		.hide{
+			display: none;
+		}
+		.layout {
+	    width: 100%;
+	    max-width: 640px;
+	    min-width: 300px;
+	    margin: 0 auto;
+	    position: relative;
+		}
+		h2 ,h4{
+			text-align: center;
+		}
+		.question{
+			margin: 5% 8% 0 8%;
+		}
+		.submit{
+			margin: 8%;
+			border-radius: 3px;
+			width:68px;
+			height:21px;
+			color:#054ea8;
+			font-size:12px;
+			background:#d9eefd;
+			border:#7f9db9 1px solid;
+			padding: 0;
+		}
+		.normal-input{
+			width: 65%;
+		}
+		.know-from{
+			margin-top: 10px;
+			width: 100%;
+			height: 24px;
+		}
+		.hideinput{
+			width: 99%;
+		}
+		.extra{
+			margin-top: 5px;
+		}
+		.q6 textarea{
+			width: 100%;
+		}
+	</style>
+	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+</head>
+<body>
+	<div class="layout">
+
+		<div class="header">
+			<h2>申请演示</h2>
+			<p>尊敬的客户:</p>
+			<p>请填写以下信息，以便我们为您提供更好的服务。</p>
+		</div>
+		<hr>
+		<div class="content">
+			<div class="question q1">
+				<span>姓名 :</span>
+				<input id="name" class="normal-input fr" type="text">
+			</div>
+			<div class="question q2">
+				<span>手机号码 :</span>
+				<input id="tel" class="normal-input fr" type="number">
+			</div>
+			<div class="question q3">
+				<span>邮箱 :</span>
+				<input id="email" class="normal-input fr" type="text">
+			</div>
+			<div class="question q4">
+				<span>公司 :</span>
+				<input id="company" class="normal-input fr" type="text">
+			</div>
+			<div class="question q5 clearfix">
+				<span>您是从通过什么方式了解我们的呢？</span>
+				<select class="know-from fr" name="" id="knowFrom">
+					<option value="null">请选择一项</option>
+					<option value="广告">广告</option>
+					<option value="会议">会议</option>
+					<option value="推荐">推荐</option>
+					<option value="搜索引擎">搜索引擎</option>
+					<option value="other">其他 -- 请在下方填写</option>
+				</select>
+			</div>
+			<div id="extra" class="question hide">
+				<input id="otherWay" class="hideinput" type="text">
+			</div>
+			<div class="question q6">
+				<p>请告知我们您的业务流程管理软件需求,以及对Gensuite解决方案感兴趣的部分。</p>
+				<textarea name="" id="business" cols="30" rows="5"></textarea>
+			</div>
+		</div>
+		<div class="footer">
+			<button class="submit fr" id="submit">提交</button>
+		</div>
+
+	</div>
+	
+</body>
+<script>
+	var knowFrom = document.getElementById('knowFrom');
+	var submit = document.getElementById('submit');
+	var extra = document.getElementById('extra');
+	var content = document.getElementsByClassName('content')[0];
+	knowFrom.onchange = function(){
+		if(knowFrom.value === 'other'){
+			extra.className = 'question extra show'
+		}else{
+			extra.className = 'hide'
+		}
+	}
+
+	submit.onclick = function(){
+		var info = {};
+		info.name = document.getElementById('name').value;
+		info.tel = document.getElementById('tel').value;
+		info.email = document.getElementById('email').value;
+		info.company = document.getElementById('company').value;
+		info.knowFrom = document.getElementById('knowFrom').value;
+		if(info.knowFrom === 'other'){
+			info.knowFrom = document.getElementById('otherWay').value;
+		}
+		info.business = document.getElementById('business').value;
+		var infoStr = '<div>' +
+										'<p>姓名：'+ info.name + '</p>' +
+										'<p>联系号码：'+ info.tel + '</p>' +
+										'<p>邮箱：'+ info.email + '</p>' +
+										'<p>公司：'+ info.company + '</p>' +
+										'<p>了解方式：'+ info.knowFrom + '</p>' +
+										'<p>需求及兴趣：'+ info.business + '</p>' +
+									'</div>';
+		$.ajax({
+			url: 'http://api.sendcloud.net/apiv2/mail/send',
+			type: 'post',
+			data: {
+				apiUser: 'EricMeng_test_Sp1pzG',
+				apiKey:'qtBgwFTd9NYX2m9x',
+				from: 'ChinaOffice@gensuitellc.com',
+				to: 'eric.meng@gensuitellc.com',
+				subject: '申请演示',
+				html: infoStr
+			},
+			complete: function(res){
+				$('.layout').html('<h2>申请成功</h2><p>尊敬的用户您好：</p><p>您已成功申请演示，我们的工作人员将会尽快和您联系！</p>')
+			},
+			contentType: "application/x-www-form-urlencoded; charset=utf-8",
+		})
+	}
+
+</script>
+</html>
