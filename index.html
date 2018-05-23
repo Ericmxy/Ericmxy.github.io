@@ -97,11 +97,11 @@
 			</div>
 			<div class="question q2">
 				<span>手机号码 </span><span class="red">*</span>
-				<input id="tel" class="normal-input fr" type="number">
+				<input id="tel" class="normal-input fr" type="tel">
 			</div>
 			<div class="question q3">
 				<span>公司邮箱 </span><span class="red">*</span>
-				<input id="email" class="normal-input fr" type="text">
+				<input id="email" class="normal-input fr" type="email">
 			</div>
 			<div class="question q4">
 				<span>公司全称 </span><span class="red">*</span>
@@ -125,8 +125,8 @@
 	
 </body>
 <script>
-	var knowFrom = document.getElementById('knowFrom');
 	var submit = document.getElementById('submit');
+	var reg = new RegExp("^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$");
 
 	submit.onclick = function(){
 		submit.disabled = true;
@@ -139,6 +139,14 @@
 		info.register = document.getElementById('register').checked?"yes":"no";
 
 		if(info.name && info.tel && info.email && info.company && info.position){
+
+			if(!reg.test(info.email)){
+				$('.tip').html('<span class="red">请输入正确格式的邮箱地址。</span>');
+				document.getElementById('email').focus();
+				submit.disabled = false;
+				return false;
+			}
+
 			var infoStr = '<div>' +
 											'<p>姓名：'+ info.name + '</p>' +
 											'<p>联系号码：'+ info.tel + '</p>' +
@@ -154,7 +162,8 @@
 					apiUser: 'EricMeng_test_Sp1pzG',
 					apiKey:'qtBgwFTd9NYX2m9x',
 					from: 'ChinaOffice@gensuitellc.com',
-					to: 'jason.yang@gensuitellc.com',
+					// to: 'jason.yang@gensuitellc.com',
+					to: 'eric.meng@gensuitellc.com',
 					subject: '申请演示',
 					html: infoStr
 				},
